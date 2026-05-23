@@ -160,12 +160,12 @@ Leave this running. Open Slack.
 ## Part 6: invite the bot + smoke test (~2 min)
 
 1. In `#general` (or any channel), type `/invite @veritype`.
-2. Then type `/verify Iceland runs on nearly 100% renewable electricity`.
+2. Then type `/veritype Iceland runs on nearly 100% renewable electricity`.
 3. Within ~6 seconds you should see:
    - A "Verifying… cross-referencing sources" placeholder message.
    - It updates to a Block Kit verdict (header, claim, sources list).
    - A Datatype-rendered PNG card uploads in the thread.
-   - A `:white_check_mark:` reaction lands on the original `/verify` message.
+   - A `:white_check_mark:` reaction lands on the original `/veritype` message.
 
 You can also:
 
@@ -198,7 +198,7 @@ into the Devpost submission form under "Try it out".
 
 ## Troubleshooting
 
-**Bot does not respond to `/verify`.**
+**Bot does not respond to `/veritype`.**
 - Confirm Socket Mode is enabled (Basic Information → Socket Mode).
 - Confirm the bot has been invited to the channel: `/invite @veritype`.
 - Check `npm run dev:slack` logs for stack traces.

@@ -21,9 +21,9 @@ features:
     messages_tab_read_only_enabled: false
 
   slash_commands:
-    - command: /verify
+    - command: /veritype
       description: Fact-check a claim with cited sources.
-      usage_hint: "<claim>"
+      usage_hint: "claim to verify"
       should_escape: false
 
 oauth_config:

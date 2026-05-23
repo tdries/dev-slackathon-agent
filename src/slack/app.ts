@@ -32,13 +32,13 @@ const app = new App({
 
 // ─── /verify slash command ────────────────────────────────────────
 
-app.command('/verify', async ({ command, ack, respond, client, logger }: any) => {
+app.command('/veritype', async ({ command, ack, respond, client, logger }: any) => {
   await ack();
   const claim = command.text.trim();
   if (!claim) {
     await respond({
       response_type: 'ephemeral',
-      text: 'Usage: `/verify <claim>` — e.g. `/verify Iceland runs on 100% renewable electricity`',
+      text: 'Usage: `/veritype <claim>`, e.g. `/veritype Iceland runs on 100% renewable electricity`',
     });
     return;
   }

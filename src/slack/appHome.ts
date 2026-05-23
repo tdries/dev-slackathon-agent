@@ -33,7 +33,7 @@ export function homeView(stats: HomeStats = DEFAULT_STATS) {
           type: 'mrkdwn',
           text:
             "*How to use Veritype*\n" +
-            "• Type `/verify <claim>` in any channel I am a member of.\n" +
+            "• Type `/veritype <claim>` in any channel I am a member of.\n" +
             "• Or just post a verifiable claim and I will quietly offer to fact-check it.\n" +
             "• Verdicts come back in thread with weighted sources and a Datatype-rendered card.",
         },

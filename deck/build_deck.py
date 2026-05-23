@@ -340,7 +340,7 @@ def slide_architecture(prs, total, n):
 
     # Top row: 3 surface boxes
     surfaces = [
-        ("Slack Bolt app", "Socket Mode, /verify, message events, button handlers", CYAN),
+        ("Slack Bolt app", "Socket Mode, /veritype, message events, button handlers", CYAN),
         ("MCP server", "stdio transport, 3 tools, plug into any MCP client", YELLOW),
         ("CLI / Dashboard", "render cards offline, demo + admin UI", PINK),
     ]

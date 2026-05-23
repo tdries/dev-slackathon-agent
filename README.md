@@ -81,7 +81,7 @@ Track: **New Slack Agent**, with the **Most Innovative** and **Best UX** awards 
 
 | Component                       | Role                                                                                                  | Path                                                                                  |
 | ------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| Slack Bolt app                  | Socket-mode app, slash command `/verify`, message listener, button handlers                            | [src/slack/app.ts](src/slack/app.ts)                                                  |
+| Slack Bolt app                  | Socket-mode app, slash command `/veritype`, message listener, button handlers                            | [src/slack/app.ts](src/slack/app.ts)                                                  |
 | Slack Block Kit blocks          | Verdict block layout, mrkdwn fallback, action buttons                                                  | [src/slack/blocks.ts](src/slack/blocks.ts)                                            |
 | Claim screener (Haiku)          | Triage layer that decides whether a message contains a verifiable claim                                | [src/core/screener.ts](src/core/screener.ts)                                          |
 | Researcher (Opus + web_search)  | Web-search-grounded research agent that produces the verdict, confidence, and weighted sources         | [src/core/researcher.ts](src/core/researcher.ts)                                      |
@@ -157,7 +157,7 @@ npm run dev:slack    # starts the Bolt app in Socket Mode
 npm run dev:web      # Vite dev server on http://127.0.0.1:5173
 ```
 
-Type `/verify Iceland runs on 100% renewable electricity` in any channel the bot is a member of.
+Type `/veritype Iceland runs on 100% renewable electricity` in any channel the bot is a member of.
 Within ~6 seconds the verdict card lands in thread.
 
 ### 5. Use as an MCP server (optional)
