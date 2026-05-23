@@ -1,41 +1,52 @@
 display_information:
   name: Veritype
-  description: One-tap fact-checking, chart-rich verdict cards, all in channel.
+  description: One-tap fact-checking with chart-rich verdict cards.
   background_color: "#3F0E40"
   long_description: |
-    Veritype is a Slack-native fact-checking agent. It quietly listens to channels
-    it has been invited to, screens each message for verifiable claims, and offers
-    a private "verify this?" prompt to the speaker. One tap fires a research agent
-    that fans out web searches, weighs sources, and replies in thread with a
-    Datatype-rendered verdict card.
+    Veritype is a Slack-native fact-checking agent. It listens to channels it has
+    been invited to, screens each message for verifiable claims, and offers a
+    private "verify this?" prompt to the speaker. One tap fires a research agent
+    (Anthropic Claude Opus 4.7 + web_search) that fans out, weighs sources, and
+    replies in thread with a Datatype-rendered verdict card showing inline
+    source-weight bars, evidence-balance pies, and a salience sparkline.
 
 features:
   bot_user:
     display_name: Veritype
     always_online: true
+
+  app_home:
+    home_tab_enabled: true
+    messages_tab_enabled: true
+    messages_tab_read_only_enabled: false
+
   slash_commands:
     - command: /verify
       description: Fact-check a claim with cited sources.
       usage_hint: "<claim>"
       should_escape: false
-  app_home:
-    home_tab_enabled: true
-    messages_tab_enabled: true
-    messages_tab_read_only_enabled: false
 
 oauth_config:
   scopes:
     bot:
       - chat:write
       - chat:write.public
+      - chat:write.customize
       - commands
       - channels:history
-      - groups:history
-      - im:history
-      - mpim:history
       - channels:read
+      - channels:join
+      - groups:history
       - groups:read
+      - im:history
+      - im:read
+      - im:write
+      - mpim:history
+      - mpim:read
       - users:read
+      - files:write
+      - reactions:write
+      - app_mentions:read
 
 settings:
   event_subscriptions:
@@ -45,8 +56,11 @@ settings:
       - message.im
       - message.mpim
       - app_home_opened
+      - app_mention
+
   interactivity:
     is_enabled: true
+
   org_deploy_enabled: false
   socket_mode_enabled: true
   token_rotation_enabled: false

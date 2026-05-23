@@ -13,6 +13,7 @@
     "build:web": "vite build",
     "preview:web": "vite preview --port 5173",
     "render:card": "tsx src/core/renderCli.ts",
+    "setup:check": "node scripts/setup-check.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "echo \"no linter configured\""
   },

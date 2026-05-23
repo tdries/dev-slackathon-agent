@@ -139,14 +139,13 @@ Fill in:
 
 ### 3. Create the Slack app
 
+Full click-by-click walkthrough lives in [docs/SLACK-SETUP.md](docs/SLACK-SETUP.md). TL;DR:
+
 1. Go to [api.slack.com/apps](https://api.slack.com/apps) → **Create New App** → **From a
-   manifest** and paste the manifest in `docs/slack-app-manifest.yaml`.
-2. Enable **Socket Mode** and generate an app-level token with `connections:write`.
-3. Under **OAuth & Permissions**, scopes the manifest sets for you:
-   `chat:write`, `chat:write.public`, `commands`, `channels:history`, `groups:history`,
-   `im:history`, `mpim:history`, `channels:read`, `users:read`.
-4. Install the app to your workspace.
-5. Add `/verify` as a slash command pointing to the same app (the manifest does this).
+   manifest** and paste [docs/slack-app-manifest.yaml](docs/slack-app-manifest.yaml).
+2. Generate an app-level token (`xapp-...`) with `connections:write` scope.
+3. Install the app to your workspace, grab the bot token (`xoxb-...`).
+4. Paste all four tokens into `.env`, then run `npm run setup:check` to validate.
 
 ### 4. Run locally
 
