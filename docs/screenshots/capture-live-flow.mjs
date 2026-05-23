@@ -5,6 +5,24 @@ const page = await browser.newPage();
 await page.setViewport({ width: 1600, height: 1400, deviceScaleFactor: 2 });
 await page.goto('http://127.0.0.1:5173/?tab=stream', { waitUntil: 'networkidle0' });
 
+// wait for all images (avatars) to fully load
+await page.evaluate(async () => {
+  const imgs = Array.from(document.querySelectorAll('img'));
+  await Promise.all(
+    imgs.map((i) =>
+      i.complete && i.naturalHeight !== 0
+        ? Promise.resolve()
+        : new Promise((res) => {
+            i.addEventListener('load', res);
+            i.addEventListener('error', res);
+            setTimeout(res, 3000);
+          }),
+    ),
+  );
+  // also wait for CSS background-image avatars
+  await new Promise((r) => setTimeout(r, 1500));
+});
+
 // shot 1: empty stream
 await page.screenshot({ path: 'docs/screenshots/10-stream-empty.png' });
 console.log('shot empty');
@@ -31,8 +49,8 @@ await new Promise((r) => setTimeout(r, 300));
 await page.screenshot({ path: 'docs/screenshots/12-stream-working.png' });
 console.log('shot working');
 
-// wait for verdict card to appear (fixture mode: ~1.8s wait)
-await page.waitForSelector('.veritype-card', { timeout: 15000 });
+// wait for verdict card to appear (live mode can take ~30-60s for Opus + web_search)
+await page.waitForSelector('.veritype-card', { timeout: 120000 });
 await new Promise((r) => setTimeout(r, 800));
 await page.evaluate(() => {
   const el = document.querySelector('.main-scroll');

@@ -43,23 +43,41 @@ export async function screenClaim(
     return { isClaim: false, confidence: 0, claim: null, topic: null, reason: 'no-text' };
   }
 
-  const jsonMatch = block.text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
+  const parsed = extractJson(block.text) as Partial<ClaimSignal> | null;
+  if (!parsed) {
     return { isClaim: false, confidence: 0, claim: null, topic: null, reason: 'no-json' };
   }
+  return {
+    isClaim: Boolean(parsed.isClaim),
+    confidence: clamp01(Number(parsed.confidence ?? 0)),
+    claim: parsed.claim ?? null,
+    topic: parsed.topic ?? null,
+    reason: String(parsed.reason ?? 'ok'),
+  };
+}
 
-  try {
-    const parsed = JSON.parse(jsonMatch[0]) as ClaimSignal;
-    return {
-      isClaim: Boolean(parsed.isClaim),
-      confidence: clamp01(Number(parsed.confidence ?? 0)),
-      claim: parsed.claim ?? null,
-      topic: parsed.topic ?? null,
-      reason: String(parsed.reason ?? 'ok'),
-    };
-  } catch {
-    return { isClaim: false, confidence: 0, claim: null, topic: null, reason: 'parse-fail' };
+function extractJson(text: string): unknown | null {
+  try { return JSON.parse(text.trim()); } catch {/* */}
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fenced) { try { return JSON.parse(fenced[1]); } catch {/* */} }
+  const start = text.indexOf('{');
+  if (start === -1) return null;
+  let depth = 0, inStr = false, escape = false;
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (escape) { escape = false; continue; }
+    if (ch === '\\') { escape = true; continue; }
+    if (ch === '"') { inStr = !inStr; continue; }
+    if (inStr) continue;
+    if (ch === '{') depth++;
+    else if (ch === '}') {
+      depth--;
+      if (depth === 0) {
+        try { return JSON.parse(text.slice(start, i + 1)); } catch { return null; }
+      }
+    }
   }
+  return null;
 }
 
 function clamp01(n: number): number {

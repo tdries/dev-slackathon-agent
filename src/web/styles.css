@@ -175,14 +175,15 @@ a:hover { text-decoration: underline; }
   width: 32px;
   height: 32px;
   border-radius: 5px;
-  background: linear-gradient(135deg, #1264A3, #2EB67D);
+  background: url('https://avatars.githubusercontent.com/u/25056342?s=80&v=4') center/cover no-repeat, linear-gradient(135deg, #1264A3, #2EB67D);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: transparent;
   font-size: 12px;
   font-weight: 700;
   position: relative;
+  text-indent: -9999px;
 }
 
 .ws-avatar::after {
@@ -634,12 +635,27 @@ a:hover { text-decoration: underline; }
   color: #fff;
 }
 
-.avatar.alex { background: #6B46C1; }
-.avatar.priya { background: #0D9488; }
-.avatar.jordan { background: #C2410C; }
-.avatar.me { background: linear-gradient(135deg, #1264A3, #2EB67D); }
+.avatar.alex,
+.avatar.priya,
+.avatar.jordan,
+.avatar.me,
 .avatar.veritype {
-  background: linear-gradient(135deg, #1264A3 0%, #2EB67D 100%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: transparent;
+  text-indent: -9999px;
+}
+
+.avatar.alex   { background-image: url('https://i.pravatar.cc/150?img=12'); background-color: #6B46C1; }
+.avatar.priya  { background-image: url('https://i.pravatar.cc/150?img=47'); background-color: #0D9488; }
+.avatar.jordan { background-image: url('https://i.pravatar.cc/150?img=33'); background-color: #C2410C; }
+.avatar.me     { background-image: url('https://avatars.githubusercontent.com/u/25056342?s=80&v=4'); background-color: #1264A3; }
+
+.avatar.veritype {
+  background-image: url('/veritype-logo.svg');
+  background-color: #1264A3;
+  background-size: 100% 100%;
 }
 
 .msg-body { flex: 1; min-width: 0; }
@@ -816,9 +832,10 @@ a:hover { text-decoration: underline; }
 }
 
 .card-metric .dt {
-  font-size: 20px;
-  margin-top: 6px;
+  font-size: 36px;
+  margin-top: 8px;
   display: block;
+  line-height: 1;
 }
 
 .card-metric .dt.support { color: var(--slack-green); }

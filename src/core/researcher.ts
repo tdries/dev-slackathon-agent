@@ -94,13 +94,63 @@ async function runResearchOnce(
     throw new Error('researcher returned no text');
   }
 
-  const jsonMatch = textBlock.text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    throw new Error('researcher returned no JSON');
+  const parsed = extractJson(textBlock.text);
+  if (!parsed) throw new Error('researcher returned no parseable JSON');
+  return normalizeReport(claim, parsed as Record<string, unknown>);
+}
+
+function extractJson(text: string): unknown | null {
+  // direct parse first (model nailed the contract)
+  try {
+    return JSON.parse(text.trim());
+  } catch {
+    /* fall through */
   }
 
-  const parsed = JSON.parse(jsonMatch[0]);
-  return normalizeReport(claim, parsed);
+  // strip markdown code fences
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fenced) {
+    try {
+      return JSON.parse(fenced[1]);
+    } catch {
+      /* fall through */
+    }
+  }
+
+  // walk balanced braces from first {
+  const start = text.indexOf('{');
+  if (start === -1) return null;
+  let depth = 0;
+  let inStr = false;
+  let escape = false;
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (escape) {
+      escape = false;
+      continue;
+    }
+    if (ch === '\\') {
+      escape = true;
+      continue;
+    }
+    if (ch === '"') {
+      inStr = !inStr;
+      continue;
+    }
+    if (inStr) continue;
+    if (ch === '{') depth++;
+    else if (ch === '}') {
+      depth--;
+      if (depth === 0) {
+        try {
+          return JSON.parse(text.slice(start, i + 1));
+        } catch {
+          return null;
+        }
+      }
+    }
+  }
+  return null;
 }
 
 function normalizeReport(originalClaim: string, raw: Record<string, unknown>) {

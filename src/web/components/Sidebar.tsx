@@ -130,10 +130,7 @@ export function Sidebar({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void })
                 title={a.label}
               >
                 <span className="sb-item-icon" aria-hidden>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <rect x="3" y="3" width="18" height="18" rx="4" fill={active ? '#fff' : 'rgba(255,255,255,0.3)'} />
-                    <path d="M7 12l3 3 7-7" stroke={active ? '#1264A3' : '#3F0E40'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
+                  <img src="/veritype-logo.svg" width="16" height="16" alt="" style={{ display: 'block', borderRadius: 3 }} />
                 </span>
                 <span className="sb-app-name">{a.label}</span>
               </button>
