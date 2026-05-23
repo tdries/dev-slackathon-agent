@@ -37,7 +37,26 @@ function autoBudgetAvailable(channel: string): boolean {
   return true;
 }
 
+// Custom Veritype emoji (uploaded to the workspace at /customize/emoji).
+// Falls back to standard Slack emoji if VERITYPE_CUSTOM_EMOJI is unset, so
+// the bot keeps working in a fresh workspace before the icons are uploaded.
+const USE_CUSTOM_EMOJI = (process.env.VERITYPE_CUSTOM_EMOJI ?? 'true').toLowerCase() !== 'false';
+
 function verdictReaction(verdict: string): string {
+  if (USE_CUSTOM_EMOJI) {
+    switch (verdict) {
+      case 'true':
+      case 'mostly_true':
+        return 'veritype_true';
+      case 'false':
+        return 'veritype_false';
+      case 'misleading':
+      case 'mixed':
+        return 'veritype_warn';
+      default:
+        return 'veritype_unknown';
+    }
+  }
   switch (verdict) {
     case 'true':
     case 'mostly_true':

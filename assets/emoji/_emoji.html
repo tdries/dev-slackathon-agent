@@ -1,0 +1,61 @@
+<!doctype html>
+<html><head><style>
+  html, body { margin:0; padding:0; }
+  .e {
+    width: 128px; height: 128px;
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-family: 'Lato', -apple-system, Helvetica, Arial, sans-serif;
+  }
+  .e svg { display: block; }
+  .v-mark {
+    position: absolute;
+    bottom: 6px;
+    right: 10px;
+    font-weight: 900;
+    font-size: 28px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .pinwheel {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 22px;
+    height: 22px;
+  }
+</style></head>
+<body>
+<!-- pick which one via ?e=true|false|warn|unknown -->
+<script>
+const which = new URL(location.href).searchParams.get('e') || 'true';
+const cfg = {
+  true:    { bg: '#2EB67D', glyph: 'check' },
+  false:   { bg: '#E01E5A', glyph: 'x' },
+  warn:    { bg: '#ECB22E', glyph: '!' },
+  unknown: { bg: '#616061', glyph: '?' },
+}[which];
+const pinwheel = `
+<svg class="pinwheel" viewBox="0 0 124 124">
+  <path d="M26 78a11 11 0 1 1 0-22h11v11a11 11 0 0 1-11 11z" fill="#E01E5A"/>
+  <path d="M31 78a11 11 0 0 1 22 0v27a11 11 0 1 1-22 0z" fill="#E01E5A"/>
+  <path d="M42 26a11 11 0 1 1 22 0v11H53a11 11 0 0 1-11-11z" fill="#36C5F0"/>
+  <path d="M42 31a11 11 0 0 1 0 22H15a11 11 0 1 1 0-22z" fill="#36C5F0"/>
+  <path d="M94 42a11 11 0 1 1 0 22H83V53a11 11 0 0 1 11-11z" fill="#2EB67D"/>
+  <path d="M89 42a11 11 0 0 1-22 0V15a11 11 0 1 1 22 0z" fill="#2EB67D"/>
+  <path d="M78 94a11 11 0 1 1-22 0V83h11a11 11 0 0 1 11 11z" fill="#ECB22E"/>
+  <path d="M78 89a11 11 0 0 1 0-22h27a11 11 0 1 1 0 22z" fill="#ECB22E"/>
+</svg>`;
+const glyphs = {
+  check: `<svg width="88" height="88" viewBox="0 0 100 100"><path d="M18 52 L42 76 L82 26" stroke="white" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+  x:     `<svg width="80" height="80" viewBox="0 0 100 100"><path d="M22 22 L78 78 M78 22 L22 78" stroke="white" stroke-width="14" stroke-linecap="round" fill="none"/></svg>`,
+  '!':   `<svg width="60" height="92" viewBox="0 0 60 100"><circle cx="30" cy="86" r="9" fill="white"/><rect x="20" y="8" width="20" height="62" rx="10" fill="white"/></svg>`,
+  '?':   `<svg width="74" height="92" viewBox="0 0 74 100"><circle cx="37" cy="86" r="9" fill="white"/><path d="M14 32 a23 23 0 1 1 33 21 q-10 6 -10 18" stroke="white" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+}[cfg.glyph];
+document.body.innerHTML = `<div class="e" style="background:${cfg.bg}">${pinwheel}${glyphs}<span class="v-mark">V</span></div>`;
+</script>
+</body></html>
