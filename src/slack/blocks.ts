@@ -40,13 +40,94 @@ export function offerVerificationBlocks(claim: string, signal: { confidence: num
 }
 
 export function workingBlocks(claim: string) {
+  return progressBlocks({
+    claim,
+    stages: DEFAULT_PROGRESS_STAGES,
+    currentStageIdx: 0,
+    bar: '▱'.repeat(18),
+    pct: 0,
+    elapsedSec: 0,
+  });
+}
+
+export type Stage = 'screen' | 'research' | 'synthesize' | 'render';
+
+interface StageSpec {
+  key: Stage;
+  label: string;
+  emoji: string;
+}
+
+export const DEFAULT_PROGRESS_STAGES: StageSpec[] = [
+  { key: 'screen', label: 'Screening claim', emoji: ':mag:' },
+  { key: 'research', label: 'Searching the web', emoji: ':globe_with_meridians:' },
+  { key: 'synthesize', label: 'Weighing sources', emoji: ':scales:' },
+  { key: 'render', label: 'Drafting verdict card', emoji: ':lower_left_paintbrush:' },
+];
+
+interface ProgressBlocksArgs {
+  claim: string;
+  stages: StageSpec[];
+  currentStageIdx: number;
+  bar: string;
+  pct: number;
+  elapsedSec: number;
+}
+
+export function progressBlocks(args: ProgressBlocksArgs) {
+  const { claim, stages, currentStageIdx, bar, pct, elapsedSec } = args;
+
+  const checklist = stages
+    .map((s, i) => {
+      const icon =
+        i < currentStageIdx ? ':white_check_mark:' : i === currentStageIdx ? ':hourglass_flowing_sand:' : ':white_circle:';
+      const styled =
+        i < currentStageIdx
+          ? `~${s.label}~`
+          : i === currentStageIdx
+          ? `*${s.label}…*`
+          : s.label;
+      return `${icon}  ${styled}`;
+    })
+    .join('   ·   ');
+
+  const currentStage = stages[currentStageIdx] ?? stages[stages.length - 1]!;
+
   return [
+    {
+      type: 'header',
+      text: {
+        type: 'plain_text',
+        text: `Verifying claim`,
+        emoji: false,
+      },
+    },
     {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `:hourglass_flowing_sand: *Veritype is researching:*\n>${claim}\n\n_Searching the web, weighing sources, drafting the verdict card…_`,
+        text: `>${claim}`,
       },
+    },
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `${currentStage.emoji}  *${currentStage.label}…*  \`${bar}\`  \`${pct}%\``,
+      },
+    },
+    {
+      type: 'context',
+      elements: [{ type: 'mrkdwn', text: checklist }],
+    },
+    {
+      type: 'context',
+      elements: [
+        {
+          type: 'mrkdwn',
+          text: `_Elapsed ${elapsedSec}s · Veritype runs on Claude Opus 4.7 + Anthropic web_search._`,
+        },
+      ],
     },
   ];
 }

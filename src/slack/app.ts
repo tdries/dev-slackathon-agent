@@ -6,6 +6,7 @@ import { screen, verify } from '../core/index.js';
 import { offerVerificationBlocks, workingBlocks, verdictBlocks } from './blocks.js';
 import { uploadVerdictCard } from './upload.js';
 import { homeView } from './appHome.js';
+import { runWithProgress } from './progress.js';
 
 const { App } = pkg as unknown as { App: new (...args: any[]) => any };
 
@@ -50,7 +51,13 @@ app.command('/veritype', async ({ command, ack, respond, client, logger }: any) 
   });
 
   try {
-    const report = await verify(claim);
+    const report = await runWithProgress({
+      client,
+      channel: command.channel_id,
+      ts: working.ts!,
+      claim,
+      task: () => verify(claim),
+    });
     await client.chat.update({
       channel: command.channel_id,
       ts: working.ts!,
@@ -141,7 +148,13 @@ app.action('veritype_verify', async ({ ack, action, respond, client, body, logge
   });
 
   try {
-    const report = await verify(claim);
+    const report = await runWithProgress({
+      client,
+      channel,
+      ts: working.ts!,
+      claim,
+      task: () => verify(claim),
+    });
     await client.chat.update({
       channel,
       ts: working.ts!,
@@ -223,7 +236,13 @@ app.event('app_mention', async ({ event, client, logger }: any) => {
     text: `Verifying: ${claim}`,
   });
   try {
-    const report = await verify(claim);
+    const report = await runWithProgress({
+      client,
+      channel: event.channel,
+      ts: working.ts!,
+      claim,
+      task: () => verify(claim),
+    });
     await client.chat.update({
       channel: event.channel,
       ts: working.ts!,
