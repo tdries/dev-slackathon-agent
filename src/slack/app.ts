@@ -13,10 +13,44 @@ const { App } = pkg as unknown as { App: new (...args: any[]) => any };
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SCREEN_THRESHOLD = 0.62;
+const SCREEN_THRESHOLD = Number(process.env.VERITYPE_SCREEN_THRESHOLD ?? 0.62);
+const AUTO_THRESHOLD = Number(process.env.VERITYPE_AUTO_THRESHOLD ?? 0.75);
+type Mode = 'offer' | 'react' | 'auto';
+const MODE = ((process.env.VERITYPE_MODE ?? 'offer').toLowerCase() as Mode);
 const CARD_DIR = process.env.VERITYPE_CARD_CACHE_DIR
   ? path.resolve(process.env.VERITYPE_CARD_CACHE_DIR)
   : path.resolve(__dirname, '../../runs/cards');
+
+// Simple in-memory rate limiter: max N auto-verifications per channel per minute.
+// Prevents runaway Anthropic spend in 'auto' mode.
+const AUTO_MAX_PER_MIN = Number(process.env.VERITYPE_AUTO_MAX_PER_MIN ?? 4);
+const autoTimestamps = new Map<string, number[]>();
+function autoBudgetAvailable(channel: string): boolean {
+  const now = Date.now();
+  const arr = (autoTimestamps.get(channel) ?? []).filter((t) => now - t < 60_000);
+  if (arr.length >= AUTO_MAX_PER_MIN) {
+    autoTimestamps.set(channel, arr);
+    return false;
+  }
+  arr.push(now);
+  autoTimestamps.set(channel, arr);
+  return true;
+}
+
+function verdictReaction(verdict: string): string {
+  switch (verdict) {
+    case 'true':
+    case 'mostly_true':
+      return 'white_check_mark';
+    case 'false':
+      return 'x';
+    case 'misleading':
+    case 'mixed':
+      return 'warning';
+    default:
+      return 'grey_question';
+  }
+}
 
 function need(name: string): string {
   const v = process.env[name];
@@ -104,6 +138,38 @@ app.event('message', async ({ event, client, logger }: any) => {
   }
   if (!signal.isClaim || signal.confidence < SCREEN_THRESHOLD || !signal.claim) return;
 
+  // Three behaviour modes, picked by env var VERITYPE_MODE:
+  //   offer  (default): post an ephemeral "verify this?" prompt to the speaker
+  //   react           : silently add :eyes: on the message, no verify, no spend
+  //   auto            : auto-verify if confidence >= AUTO_THRESHOLD, post the
+  //                     verdict card in thread, and react with the verdict emoji
+  if (MODE === 'react') {
+    await client.reactions
+      .add({ channel: event.channel, timestamp: event.ts, name: 'eyes' })
+      .catch(() => {});
+    return;
+  }
+
+  if (MODE === 'auto' && signal.confidence >= AUTO_THRESHOLD) {
+    if (!autoBudgetAvailable(event.channel)) {
+      logger.warn(`auto-verify rate limit hit on channel ${event.channel}`);
+      return;
+    }
+    // Acknowledge instantly so the user knows the bot is on it.
+    await client.reactions
+      .add({ channel: event.channel, timestamp: event.ts, name: 'eyes' })
+      .catch(() => {});
+    await runAutoVerify({
+      client,
+      logger,
+      channel: event.channel,
+      messageTs: event.ts,
+      claim: signal.claim,
+    });
+    return;
+  }
+
+  // default: offer
   await client.chat.postEphemeral({
     channel: event.channel,
     user: event.user!,
@@ -111,6 +177,63 @@ app.event('message', async ({ event, client, logger }: any) => {
     text: `Want me to fact-check: ${signal.claim}?`,
   });
 });
+
+async function runAutoVerify({
+  client,
+  logger,
+  channel,
+  messageTs,
+  claim,
+}: {
+  client: any;
+  logger: any;
+  channel: string;
+  messageTs: string;
+  claim: string;
+}) {
+  const working = await client.chat.postMessage({
+    channel,
+    thread_ts: messageTs,
+    blocks: workingBlocks(claim) as never,
+    text: `Auto-verifying: ${claim}`,
+  });
+  try {
+    const report = await runWithProgress({
+      client,
+      channel,
+      ts: working.ts!,
+      claim,
+      task: () => verify(claim),
+    });
+    await client.chat.update({
+      channel,
+      ts: working.ts!,
+      blocks: verdictBlocks(report) as never,
+      text: `Veritype auto-verdict: ${claim}`,
+    });
+    await uploadVerdictCard({
+      client,
+      channel,
+      threadTs: messageTs,
+      report,
+      cardDir: CARD_DIR,
+    });
+    // Replace the placeholder :eyes: with the final verdict reaction.
+    await client.reactions
+      .remove({ channel, timestamp: messageTs, name: 'eyes' })
+      .catch(() => {});
+    await client.reactions
+      .add({ channel, timestamp: messageTs, name: verdictReaction(report.verdict) })
+      .catch(() => {});
+  } catch (err) {
+    logger.error('auto-verify failed', err);
+    await client.chat.update({
+      channel,
+      ts: working.ts!,
+      text: `:warning: Veritype hit an error: ${(err as Error).message}`,
+    });
+  }
+}
 
 // ─── Button: dismiss ──────────────────────────────────────────────
 
@@ -169,20 +292,14 @@ app.action('veritype_verify', async ({ ack, action, respond, client, body, logge
       cardDir: CARD_DIR,
     });
 
-    // Also drop a verdict reaction on the original message so the verdict is visible
-    // to anyone scrolling past the channel.
-    const reaction =
-      report.verdict === 'true' || report.verdict === 'mostly_true'
-        ? 'white_check_mark'
-        : report.verdict === 'false'
-        ? 'x'
-        : report.verdict === 'misleading' || report.verdict === 'mixed'
-        ? 'warning'
-        : 'grey_question';
+    // Also drop a verdict reaction on the original message so the verdict is
+    // visible to anyone scrolling past the channel.
     if (messageTs) {
-      await client.reactions.add({ channel, timestamp: messageTs, name: reaction }).catch(() => {
-        /* reaction is best-effort; may fail if already reacted or no permission */
-      });
+      await client.reactions
+        .add({ channel, timestamp: messageTs, name: verdictReaction(report.verdict) })
+        .catch(() => {
+          /* best-effort; may fail if already reacted or no permission */
+        });
     }
   } catch (err) {
     logger.error('verify action failed', err);
