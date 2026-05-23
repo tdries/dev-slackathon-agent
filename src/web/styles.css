@@ -637,6 +637,7 @@ a:hover { text-decoration: underline; }
 .avatar.alex { background: #6B46C1; }
 .avatar.priya { background: #0D9488; }
 .avatar.jordan { background: #C2410C; }
+.avatar.me { background: linear-gradient(135deg, #1264A3, #2EB67D); }
 .avatar.veritype {
   background: linear-gradient(135deg, #1264A3 0%, #2EB67D 100%);
 }
@@ -925,8 +926,14 @@ a:hover { text-decoration: underline; }
 .card-action-btn:hover { background: var(--bg); }
 
 /* Slack composer */
+.composer-wrap {
+  padding: 8px 20px 14px 20px;
+  background: var(--surface);
+  border-top: 1px solid var(--hairline-soft);
+  flex-shrink: 0;
+}
+
 .composer {
-  margin: 12px 20px 16px 20px;
   border: 2px solid var(--hairline);
   border-radius: 8px;
   background: var(--surface);
@@ -961,12 +968,15 @@ a:hover { text-decoration: underline; }
 .composer-input {
   flex: 1;
   font-size: 15px;
-  color: var(--ink-3);
+  color: var(--ink);
   padding: 8px 0;
   border: none;
   outline: none;
   background: transparent;
+  width: 100%;
 }
+
+.composer-input::placeholder { color: var(--ink-3); }
 
 .composer-footer {
   display: flex;
@@ -1226,6 +1236,121 @@ select.input { min-width: auto; }
 .app-tab.active {
   color: var(--ink);
   border-bottom-color: var(--ink);
+}
+
+/* ─── Live demo affordances (Stream page) ────────────────────────── */
+
+.demo-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  background: linear-gradient(90deg, rgba(46,182,125,0.10), rgba(18,100,163,0.10));
+  border-bottom: 1px solid var(--hairline-soft);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.demo-banner strong { color: var(--ink); font-weight: 700; }
+
+.demo-banner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--slack-green);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(46,182,125,0.2);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(46,182,125,0.45); }
+  50% { box-shadow: 0 0 0 6px rgba(46,182,125,0); }
+}
+
+.demo-banner-mode {
+  margin-left: auto;
+  font-family: 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  color: var(--ink-3);
+  background: var(--surface);
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+}
+
+.demo-prompts {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-bottom: 1px solid var(--hairline-soft);
+  background: var(--surface);
+  flex-wrap: wrap;
+}
+
+.demo-prompts-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+.demo-prompt-btn {
+  border: 1px solid var(--hairline);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: inherit;
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.12s ease;
+}
+
+.demo-prompt-btn:hover:not(:disabled) {
+  background: var(--bg);
+  color: var(--ink);
+  border-color: var(--ink-4);
+}
+
+.demo-prompt-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.working-card {
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--panel-soft);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  margin-top: 6px;
+  max-width: 540px;
+  align-items: flex-start;
+}
+
+.working-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--hairline);
+  border-top-color: var(--slack-blue);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.composer textarea.composer-input {
+  resize: none;
+  min-height: 36px;
+  font-family: inherit;
 }
 
 /* utility */

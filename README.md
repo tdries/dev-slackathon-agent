@@ -197,13 +197,33 @@ the Slack side.
 
 ## 5. What it looks like
 
+### Try the live demo
+
+```bash
+npm install
+npm run dev:web      # opens at http://127.0.0.1:5173/?tab=stream
+```
+
+The channel stream tab is fully interactive. Type a message in the composer (or tap one of the
+preset claims) and Veritype actually screens it, offers an ephemeral verification, then posts a
+verdict card. With no `ANTHROPIC_API_KEY` set, the demo runs in fixture mode (still real Slack
+UX, deterministic verdicts). Set the key and the same flow goes live: real Haiku 4.5 screener,
+real Opus 4.7 + `web_search` research.
+
 ### In-channel: the proactive offer
 
 Veritype screens each new message through Haiku 4.5. When it spots a verifiable, public-interest
 claim, it posts an ephemeral "want me to verify this?" only the message author can see, with the
 screener's confidence score for transparency.
 
-![Slack channel with the proactive offer](docs/screenshots/0stream.png)
+![Slack channel with the proactive offer](docs/screenshots/11-stream-offer.png)
+
+### One tap, verdict in thread
+
+Click "Verify this claim" and the agent fans out, weighs sources, and replies in thread with the
+Datatype-rendered card. Real time. Real sources. Real verdict.
+
+![Full verdict card delivered in the Slack thread](docs/screenshots/13-stream-verdict.png)
 
 ### The verdict card
 
