@@ -1,0 +1,32 @@
+# env
+.env
+.env.local
+.env.*.local
+
+# node
+node_modules/
+dist/
+build/
+.vite/
+
+# python (deck/manual tooling)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# editor / OS
+.DS_Store
+.vscode/
+.idea/
+
+# runtime artefacts
+logs/
+*.log
+runs/
+*.pdf.bak
+*.template.pptx.bak
+/tmp-render/
+
+# misc
+*.tsbuildinfo

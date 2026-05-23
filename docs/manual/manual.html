@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Veritype Operator Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@font-face {
+  font-family: 'Datatype';
+  src: url('../../assets/fonts/Datatype-Regular.woff2') format('woff2');
+  font-weight: 400; font-display: block;
+}
+@font-face {
+  font-family: 'Datatype';
+  src: url('../../assets/fonts/Datatype-Bold.woff2') format('woff2');
+  font-weight: 700; font-display: block;
+}
+
+:root {
+  --aubergine: #3F0E40;
+  --aubergine-deep: #19171D;
+  --slack-blue: #1264A3;
+  --slack-pink: #E01E5A;
+  --slack-yellow: #ECB22E;
+  --slack-green: #2EB67D;
+  --slack-cyan: #36C5F0;
+  --ink: #1D1C1D;
+  --ink-2: #454245;
+  --ink-3: #616061;
+  --ink-4: #868686;
+  --hairline: #DDDDDD;
+  --hairline-soft: #E8E8E8;
+  --panel: #F8F8F8;
+  --warm: #F4EDE4;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+html, body {
+  margin: 0; padding: 0;
+  font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif;
+  color: var(--ink);
+  font-size: 11pt;
+  line-height: 1.5;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.page {
+  width: 210mm;
+  height: 297mm;
+  padding: 22mm 22mm 18mm 22mm;
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+  background: #fff;
+}
+
+.page.last { page-break-after: avoid; }
+
+/* Cover + closing full-bleed */
+.cover, .closing {
+  width: 210mm;
+  height: 297mm;
+  min-height: 297mm;
+  position: relative;
+  padding: 0;
+  page-break-after: always;
+  background: var(--aubergine);
+  color: #fff;
+  box-sizing: border-box;
+  display: block;
+}
+
+.cover.last, .closing.last { page-break-after: avoid; }
+
+.cover .colors, .closing .colors {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 8mm;
+  display: flex;
+}
+.cover .colors > span, .closing .colors > span {
+  flex: 1;
+}
+
+.cover-inner {
+  padding: 30mm 22mm 22mm 22mm;
+  height: 297mm;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.cover-eyebrow {
+  font-size: 10pt;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #BBBABC;
+  margin-bottom: 8mm;
+}
+
+.cover h1 {
+  font-size: 64pt;
+  font-weight: 900;
+  margin: 0 0 6mm 0;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.cover h2 {
+  font-size: 18pt;
+  font-weight: 400;
+  margin: 0 0 18mm 0;
+  color: #DDDDDD;
+  line-height: 1.35;
+  max-width: 140mm;
+}
+
+.cover .meta-row {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10pt;
+  color: #BBBABC;
+  border-top: 1px solid rgba(255,255,255,0.18);
+  padding-top: 8mm;
+}
+
+.cover .meta-row strong { color: #fff; font-weight: 700; }
+
+.cover .chart-row {
+  margin-top: 12mm;
+  color: var(--slack-cyan);
+  font-family: 'Datatype', sans-serif;
+  font-feature-settings: 'calt' 1, 'liga' 1, 'dlig' 1;
+  font-size: 24pt;
+}
+
+/* page header / footer */
+.page-header {
+  position: absolute;
+  top: 8mm;
+  left: 22mm;
+  right: 22mm;
+  display: flex;
+  justify-content: space-between;
+  font-size: 9pt;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.page-footer {
+  position: absolute;
+  bottom: 9mm;
+  left: 22mm;
+  right: 22mm;
+  display: flex;
+  justify-content: space-between;
+  font-size: 9pt;
+  color: var(--ink-3);
+}
+
+.page-footer .brand {
+  color: var(--ink-2);
+  font-weight: 700;
+}
+
+.chapter-eyebrow {
+  display: inline-block;
+  background: var(--aubergine);
+  color: #fff;
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 5mm;
+}
+
+h1.chapter-title {
+  font-size: 30pt;
+  font-weight: 900;
+  margin: 0 0 5mm 0;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+h2.section-title {
+  font-size: 16pt;
+  font-weight: 900;
+  margin: 8mm 0 3mm 0;
+  letter-spacing: -0.005em;
+}
+
+h3.sub-title {
+  font-size: 13pt;
+  font-weight: 700;
+  margin: 6mm 0 2mm 0;
+}
+
+p { margin: 0 0 3mm 0; }
+
+.dt {
+  font-family: 'Datatype', sans-serif;
+  font-feature-settings: 'calt' 1, 'liga' 1, 'dlig' 1;
+}
+
+ul { margin: 0 0 4mm 5mm; padding: 0; }
+li { margin-bottom: 1mm; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10pt;
+  margin: 3mm 0 5mm 0;
+}
+
+th {
+  text-align: left;
+  background: var(--panel);
+  padding: 6px 10px;
+  border-bottom: 2px solid var(--hairline);
+  font-weight: 700;
+  font-size: 9pt;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-2);
+}
+
+td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--hairline-soft);
+  vertical-align: top;
+}
+
+code, .code {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 9pt;
+  background: var(--panel);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--ink);
+}
+
+pre {
+  background: var(--aubergine-deep);
+  color: #E8E8E8;
+  padding: 4mm 5mm;
+  border-radius: 6px;
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 9pt;
+  line-height: 1.55;
+  overflow: hidden;
+  margin: 3mm 0;
+}
+
+pre .k { color: var(--slack-green); }
+pre .s { color: var(--slack-yellow); }
+pre .c { color: var(--ink-4); }
+
+.callout {
+  background: var(--panel);
+  border-left: 4px solid var(--slack-blue);
+  padding: 4mm 5mm;
+  margin: 4mm 0;
+  border-radius: 4px;
+  font-size: 10pt;
+}
+
+.callout.warn { border-left-color: var(--slack-pink); }
+.callout.good { border-left-color: var(--slack-green); }
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4mm;
+  margin: 5mm 0;
+}
+
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--hairline-soft);
+  border-radius: 5px;
+  padding: 4mm 4mm 3mm 4mm;
+}
+
+.stat-label {
+  font-size: 8pt;
+  color: var(--ink-3);
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 2mm;
+}
+
+.stat-value {
+  font-size: 20pt;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.stat-trend {
+  margin-top: 2mm;
+  font-family: 'Datatype', sans-serif;
+  font-feature-settings: 'calt' 1, 'liga' 1, 'dlig' 1;
+  font-size: 17pt;
+}
+
+.stat-card.green .stat-trend { color: var(--slack-green); }
+.stat-card.pink .stat-trend { color: var(--slack-pink); }
+.stat-card.blue .stat-trend { color: var(--slack-blue); }
+.stat-card.yellow .stat-trend { color: var(--slack-yellow); }
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4mm;
+  margin-top: 4mm;
+}
+
+.compare-card {
+  background: var(--panel);
+  border-radius: 5px;
+  padding: 5mm;
+  font-size: 10pt;
+}
+
+.compare-card.pos { background: rgba(46,182,125,0.10); }
+.compare-card.neg { background: rgba(224,30,90,0.08); }
+
+.compare-card h4 {
+  margin: 0 0 3mm 0;
+  font-size: 9pt;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.toc-row {
+  display: flex;
+  align-items: baseline;
+  padding: 3mm 0;
+  border-bottom: 1px solid var(--hairline-soft);
+}
+
+.toc-num {
+  width: 12mm;
+  font-weight: 900;
+  font-size: 12pt;
+  color: var(--slack-blue);
+}
+
+.toc-title { font-weight: 700; font-size: 12pt; }
+.toc-desc { color: var(--ink-3); font-size: 10pt; margin-left: 2mm; }
+.toc-page { margin-left: auto; color: var(--ink-3); font-size: 10pt; }
+
+.screenshot {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  margin: 4mm 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.screenshot.half { width: 80%; margin: 4mm auto; }
+
+.architecture {
+  background: var(--panel);
+  border-radius: 6px;
+  padding: 5mm;
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 8.5pt;
+  white-space: pre;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.closing-inner {
+  padding: 30mm 22mm 22mm 22mm;
+  height: 297mm;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.closing h1 {
+  font-size: 56pt;
+  font-weight: 900;
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.closing p {
+  font-size: 14pt;
+  color: #DDDDDD;
+  max-width: 150mm;
+  line-height: 1.4;
+  margin-top: 6mm;
+}
+
+.closing .tagline {
+  margin-top: auto;
+  font-family: 'Datatype', sans-serif;
+  font-size: 18pt;
+  color: var(--slack-cyan);
+  border-top: 1px solid rgba(255,255,255,0.2);
+  padding-top: 8mm;
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: 50mm 1fr;
+  gap: 2mm 5mm;
+  font-size: 10pt;
+}
+
+.kv .k { color: var(--ink-3); font-weight: 700; }
+
+.tag-row { margin: 2mm 0; }
+.tag {
+  display: inline-block;
+  font-size: 9pt;
+  padding: 1px 8px;
+  border-radius: 999px;
+  margin: 0 2px 2px 0;
+  background: var(--panel);
+  border: 1px solid var(--hairline);
+  color: var(--ink-2);
+}
+
+.tag.blue { background: rgba(18,100,163,0.1); border-color: rgba(18,100,163,0.4); color: var(--slack-blue); }
+.tag.green { background: rgba(46,182,125,0.12); border-color: rgba(46,182,125,0.4); color: #1A7B53; }
+.tag.pink { background: rgba(224,30,90,0.1); border-color: rgba(224,30,90,0.4); color: var(--slack-pink); }
+</style>
+</head>
+<body>
+
+<!-- ──────────────── COVER (page 1) ──────────────── -->
+<section class="cover">
+  <div class="colors">
+    <span style="background:#36C5F0"></span>
+    <span style="background:#2EB67D"></span>
+    <span style="background:#ECB22E"></span>
+    <span style="background:#E01E5A"></span>
+  </div>
+  <div class="cover-inner">
+    <div class="cover-eyebrow">SLACK AGENT BUILDER CHALLENGE 2026 · OPERATOR MANUAL</div>
+    <h1>Veritype</h1>
+    <h2>One-tap fact-checking inside Slack,<br/>with chart-rich verdict cards rendered<br/>through the Datatype variable font.</h2>
+
+    <div class="chart-row">{b:20,45,70,82,90,95} · {l:30,42,60,72,85,90,88} · {p:84}</div>
+
+    <div class="meta-row">
+      <div>
+        <strong>Version</strong> 0.1.0<br/>
+        <strong>Author</strong> Tim Dries
+      </div>
+      <div style="text-align:right">
+        <strong>Track</strong> New Slack Agent<br/>
+        <strong>Date</strong> 2026-05-23
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────── TOC (page 2) ──────────────── -->
+<section class="page">
+  <div class="page-header"><span>Veritype Operator Manual</span><span>02</span></div>
+  <span class="chapter-eyebrow">TABLE OF CONTENTS</span>
+  <h1 class="chapter-title">What's inside.</h1>
+  <p style="color: var(--ink-3); max-width:150mm;">A practical guide for installing, running, demoing, and extending the Veritype Slack agent.</p>
+
+  <div style="margin-top: 6mm;">
+    <div class="toc-row"><span class="toc-num">01</span><span class="toc-title">The problem</span><span class="toc-desc">Why misinformation friction matters in Slack.</span><span class="toc-page">03</span></div>
+    <div class="toc-row"><span class="toc-num">02</span><span class="toc-title">What Veritype does</span><span class="toc-desc">The user journey in three steps.</span><span class="toc-page">04</span></div>
+    <div class="toc-row"><span class="toc-num">03</span><span class="toc-title">Architecture</span><span class="toc-desc">One brain, three surfaces.</span><span class="toc-page">05</span></div>
+    <div class="toc-row"><span class="toc-num">04</span><span class="toc-title">Components</span><span class="toc-desc">Every file that does something interesting.</span><span class="toc-page">06</span></div>
+    <div class="toc-row"><span class="toc-num">05</span><span class="toc-title">In-channel UX</span><span class="toc-desc">The proactive offer, the threaded verdict.</span><span class="toc-page">07</span></div>
+    <div class="toc-row"><span class="toc-num">06</span><span class="toc-title">The verdict card</span><span class="toc-desc">Anatomy of a Datatype-rendered card.</span><span class="toc-page">08</span></div>
+    <div class="toc-row"><span class="toc-num">07</span><span class="toc-title">Workspace home</span><span class="toc-desc">Admin dashboard with KPIs and history.</span><span class="toc-page">09</span></div>
+    <div class="toc-row"><span class="toc-num">08</span><span class="toc-title">Verification library</span><span class="toc-desc">Every claim, every citation, searchable.</span><span class="toc-page">10</span></div>
+    <div class="toc-row"><span class="toc-num">09</span><span class="toc-title">Card playground &amp; MCP</span><span class="toc-desc">Edit cards live, plug into Claude Desktop.</span><span class="toc-page">11</span></div>
+    <div class="toc-row"><span class="toc-num">10</span><span class="toc-title">Settings &amp; tuning</span><span class="toc-desc">Threshold, allow-list, model choice.</span><span class="toc-page">12</span></div>
+    <div class="toc-row"><span class="toc-num">11</span><span class="toc-title">Setup &amp; deploy</span><span class="toc-desc">From cold clone to live Slack workspace.</span><span class="toc-page">13</span></div>
+    <div class="toc-row"><span class="toc-num">12</span><span class="toc-title">Resources</span><span class="toc-desc">Repo, demo video, MCP config, fonts.</span><span class="toc-page">14</span></div>
+  </div>
+
+  <div class="page-footer"><span class="brand">Veritype · 0.1.0</span><span>Slack Agent Builder Challenge 2026</span></div>
+</section>
+
+<!-- ──────────────── 01 PROBLEM (page 3) ──────────────── -->
+<section class="page">
+  <div class="page-header"><span>01 · The problem</span><span>03</span></div>
+  <span class="chapter-eyebrow">01 THE PROBLEM</span>
+  <h1 class="chapter-title">Misinformation moves faster than the team can Google.</h1>
+  <p>Slack is the substrate that modern teams use to trade information at speed. That speed is also why half-true claims spread before anyone has time to challenge them.</p>
+  <p>The person who eventually pushes back has to do their homework alone, in a side tab, then disrupt the thread to share it. By that point the original claim has been internalised by three other people and re-shared in a different channel.</p>
+
+  <h2 class="section-title">What today looks like</h2>
+  <div class="compare">
+    <div class="compare-card neg">
+      <h4>WITHOUT VERITYPE</h4>
+      <ul>
+        <li>Claim drops in #general at 09:47.</li>
+        <li>Three emoji-reactions, no challenge.</li>
+        <li>10:30, someone tries to push back. Has to Google for ten minutes.</li>
+        <li>Source debate derails the channel for the rest of the morning.</li>
+        <li>The team's track record on disputed claims is invisible.</li>
+      </ul>
+    </div>
+    <div class="compare-card pos">
+      <h4>WITH VERITYPE</h4>
+      <ul>
+        <li>Bot offers a one-tap verification, privately to the speaker.</li>
+        <li>Verdict arrives in 5 to 8 seconds with weighted citations.</li>
+        <li>Card stays in thread. Sources are one click away.</li>
+        <li>Channel stays calm, the work resumes.</li>
+        <li>Workspace dashboard tracks claims, verdicts, latency, coverage.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="section-title">Why a fact-checking agent, not a fact-checking link</h2>
+  <p>People do not stop to verify claims when the cost is opening another tab. People do stop to verify when the cost is a single button. Slack apps that are not in-channel get used twice and forgotten. Veritype lives in the conversation, with the same APP pill any other bot has, and never makes you context-switch.</p>
+
+  <div class="callout">
+    <strong>Why a font for the chart?</strong> A PNG chart is cute. A chart that is also valid text inside a Datatype-styled card is searchable, copy-pasteable, scales with text size, and gives the verdict an inarguably unique visual identity. Nobody else in this hackathon is doing it.
+  </div>
+
+  <div class="page-footer"><span class="brand">Veritype · 0.1.0</span><span>01 · The problem</span></div>
+</section>
+
+<!-- ──────────────── 02 WHAT IT DOES (page 4) ──────────────── -->
+<section class="page">
+  <div class="page-header"><span>02 · What Veritype does</span><span>04</span></div>
+  <span class="chapter-eyebrow">02 WHAT IT DOES</span>
+  <h1 class="chapter-title">Listen, verify, render.</h1>
+  <p>Three small steps. One feels like the bot is paying attention. One feels like the bot is doing real work. One feels like the bot has visual taste.</p>
+
+  <div class="stat-row">
+    <div class="stat-card blue">
+      <div class="stat-label">Claims · 30d</div>
+      <div class="stat-value">1,284</div>
+      <div class="stat-trend">{l:38,42,51,49,62,58,71,84}</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Landed true</div>
+      <div class="stat-value">41%</div>
+      <div class="stat-trend">{p:41}</div>
+    </div>
+    <div class="stat-card pink">
+      <div class="stat-label">Landed false</div>
+      <div class="stat-value">27%</div>
+      <div class="stat-trend">{p:27}</div>
+    </div>
+    <div class="stat-card yellow">
+      <div class="stat-label">P50 latency</div>
+      <div class="stat-value">5.4 s</div>
+      <div class="stat-trend">{b:62,58,49,55,47,42,40,34}</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">The pipeline</h2>
+  <table>
+    <tr>
+      <th style="width:25mm">Step</th>
+      <th>What happens</th>
+      <th style="width:45mm">Model</th>
+    </tr>
+    <tr>
+      <td><strong>Listen</strong></td>
+      <td>Every channel message hits a triage classifier that decides whether it asserts a verifiable, public-interest claim. If yes, an ephemeral "want me to verify this?" prompt appears.</td>
+      <td><code>claude-haiku-4-5</code></td>
+    </tr>
+    <tr>
+      <td><strong>Verify</strong></td>
+      <td>On accept, a research agent fans out web searches, weighs sources by quality, and synthesises a verdict (TRUE / MOSTLY TRUE / MIXED / MISLEADING / FALSE / UNVERIFIED) with confidence, citations, and context.</td>
+      <td><code>claude-opus-4-7</code> + <code>web_search</code></td>
+    </tr>
+    <tr>
+      <td><strong>Render</strong></td>
+      <td>The verdict is painted into a Datatype-font HTML card and rasterised by Puppeteer. Slack thread gets a PNG plus a Block Kit mrkdwn fallback for accessibility, search, and mobile.</td>
+      <td>Puppeteer + Datatype</td>
+    </tr>
+  </table>
+
+  <h2 class="section-title">Three Datatype expressions, three insights</h2>
+  <p>The font turns text like <code>{b:20,45,70}</code> into a real bar chart through ligature substitution. Every verdict card uses three of these:</p>
+  <ul>
+    <li><code>{b:…}</code> source-weight bars: primary documents sit taller than blog posts.</li>
+    <li><code>{p:…}</code> three pies for supports / refutes / context as evidence balance.</li>
+    <li><code>{l:…}</code> a sparkline of how often the claim has been showing up over time.</li>
+  </ul>
+
+  <div class="page-footer"><span class="brand">Veritype · 0.1.0</span><span>02 · What Veritype does</span></div>
+</section>
+
+<!-- ──────────────── 03 ARCHITECTURE (page 5) ──────────────── -->
+<section class="page">
+  <div class="page-header"><span>03 · Architecture</span><span>05</span></div>
+  <span class="chapter-eyebrow">03 ARCHITECTURE</span>
+  <h1 class="chapter-title">One brain, three surfaces.</h1>
+  <p>Everything lives in <code>src/</code>. The Slack bot, the MCP server, and the demo dashboard are three thin shells around a single core module.</p>
+
+  <div class="architecture">
+     ┌───────────────┐    ┌────────────────┐    ┌─────────────────┐
+     │  Slack Bolt   │    │   MCP server   │    │  CLI / Vite UI  │
+     │   (Socket)    │    │    (stdio)     │    │   (Playground)  │
+     └───────┬───────┘    └────────┬───────┘    └────────┬────────┘
+             │                     │                     │
+             └─────────┬───────────┴─────────┬───────────┘
+                       ▼                     ▼
+              ┌───────────────────────────────────┐
+              │      veritype/core (TypeScript)   │
+              │   screen → research → render      │
+              └────────────────┬──────────────────┘
+                               ▼
+               ┌─────────────────────────────────┐
+               │  Anthropic Haiku 4.5 (screen)   │
+               │  Anthropic Opus 4.7 + web_search │
+               │  Puppeteer + Datatype font (png) │
+               └─────────────────────────────────┘
+  </div>
+
+  <h2 class="section-title">Why split the brain from the bot</h2>
+  <p>If the fact-checking logic only lived inside the Slack handler, a teammate using Claude Desktop could not call it. By isolating it in <code>src/core</code> and re-exposing it through MCP, the same verdict that lands in a Slack thread can be requested from any MCP-aware client.</p>
+
+  <div class="callout good">
+    <strong>Hackathon requirement check.</strong> Slack Agent Builder Challenge requires at least one of: Slack AI capabilities, MCP server integration, Real-Time Search API. Veritype hits two: a real MCP server and Anthropic's <code>web_search_20250305</code> tool used by every verification.
+  </div>
+
+  <h2 class="section-title">Failure modes built in</h2>
+  <ul>
+    <li>If Opus is unavailable or rate-limited, the researcher falls back to <code>claude-sonnet-4-6</code> with the same JSON contract.</li>
+    <li>If the screener returns malformed JSON, the message is silently skipped (no offer, no error pollution).</li>
+    <li>If Puppeteer fails to render, the bot still posts the mrkdwn Block Kit fallback so users always see the verdict.</li>
+  </ul>
+
+  <div class="page-footer"><span class="brand">Veritype · 0.1.0</span><span>03 · Architecture</span></div>
+</section>
+
+<!-- ──────────────── 04 COMPONENTS (page 6) ──────────────── -->
+<section class="page">
+  <div class="page-header"><span>04 · Components</span><span>06</span></div>
+  <span class="chapter-eyebrow">04 COMPONENTS</span>
+  <h1 class="chapter-title">Every file that does something interesting.</h1>
+
+  <table>
+    <tr>
+      <th style="width:55mm">Component</th>
+      <th>Role</th>
+      <th style="width:50mm">Path</th>
+    </tr>
+    <tr>
+      <td><strong>Slack Bolt app</strong></td>
+      <td>Socket-mode app, <code>/verify</code> slash command, message events, button handlers.</td>
+      <td><code>src/slack/app.ts</code></td>
+    </tr>
+    <tr>
+      <td><strong>Block Kit blocks</strong></td>
+      <td>Verdict block layout, mrkdwn fallback, action buttons.</td>
+      <td><code>src/slack/blocks.ts</code></td>
+    </tr>
+    <tr>
+      <td><strong>Claim screener</strong></td>
+      <td>Haiku 4.5 layer that decides whether a message contains a verifiable claim.</td>
+      <td><code>src/core/screener.ts</code></td>
+    </tr>
+    <tr>
+      <td><strong>Researcher</strong></td>
+      <td>Opus 4.7 + <code>web_search</code> agent. Returns verdict, confidence, weighted sources.</td>
+      <td><code>src/core/researcher.ts</code></td>
+    </tr>
+    <tr>
+      <td><strong>Card template</strong></td>
+      <td>Datatype-styled HTML used by both the PNG renderer and the dashboard.</td>
+      <td><code>src/core/cardTemplate.ts</code></td>
+    </tr>
+    <tr>
+      <td><strong>Puppeteer renderer</strong></td>
+      <td>Rasterises HTML cards to PNG with hi-DPI scale factor.</td>
+      <td><code>src/core/renderer.ts</code></td>
+    </tr>
+    <tr>
+      <td><strong>MCP server</strong></td>
+      <td>Exposes <code>screen_message</code>, <code>verify_claim</code>, <code>render_verdict_card</code> over stdio MCP.</td>
+      <td><code>src/mcp/server.ts</code></td>
+    </tr>
+    <tr>
+      <td><strong>Demo dashboard</strong></td>
+      <td>Slack-skinned Vite/React UI for screenshots, library browsing, playground.</td>
+      <td><code>src/web/</code></td>
+    </tr>
+    <tr>
+      <td><strong>Datatype font</strong></td>
+      <td>The variable font that makes <code>{b:…}</code>, <code>{l:…}</code>, <code>{p:…}</code> render as charts.</td>
+      <td><code>assets/fonts/</code></td>
+    </tr>
+    <tr>
+      <td><strong>Sample fixtures</strong></td>
+      <td>Three pre-baked reports used by the playground and CLI renderer.</td>
+      <td><code>src/core/sample.ts</code></td>
+    </tr>
+  </table>
+
+  <h2 class="section-title">Built with</h2>
+  <div class="tag-row">
+    <span class="tag blue">TypeScript</span>
+    <span class="tag blue">Node.js 22</span>
+    <span class="tag pink">Slack Bolt</span>
+    <span class="tag pink">Slack Block Kit</span>
+    <span class="tag green">Anthropic SDK</span>
+    <span class="tag green">Claude Haiku 4.5</span>
+    <span class="tag green">Claude Opus 4.7</span>
+    <span class="tag green">Anthropic web_search</span>
+    <span class="tag">Model Context Protocol</span>
+    <span class="tag">Puppeteer</span>
+    <span class="tag">Datatype font</span>
+    <span class="tag">Vite</span>
+    <span class="tag">React 18</span>
+    <span class="tag">python-pptx</span>
+  </div>
+
+  <div class="page-footer"><span class="brand">Veritype · 0.1.0</span><span>04 · Components</span></div>
+</section>
+
+<!-- ──────────────── 05 IN-CHANNEL UX (page 7) ──────────────── -->
+<section class="page">
+  <div class="page-header"><span>05 · In-channel UX</span><span>07</span></div>
+  <span class="chapter-eyebrow">05 IN-CHANNEL UX</span>
+  <h1 class="chapter-title">The proactive offer.</h1>
+  <p>Veritype's most distinctive UX move: it asks first. Every message in a watched channel goes through the Haiku screener, and when a verifiable claim is detected, the bot drops an ephemeral prompt visible only to the speaker. No public noise, no shaming.</p>
+
+  <img class="screenshot" src="../screenshots/0stream.png" alt="Slack channel with the proactive offer and a verdict card in thread" />
+
+  <h2 class="section-title">Three properties that make it feel native</h2>
+  <ol>
+    <li><strong>Ephemeral by default.</strong> The offer is only seen by the message author. If they dismiss, nobody else ever knew.</li>
+    <li><strong>Threaded by default.</strong> Verdicts post in thread so the main channel stays scannable.</li>
+    <li><strong>Block Kit + image dual surface.</strong> The card is sent both as a Datatype PNG and as native Block Kit mrkdwn, so it works on mobile, screen readers, and Slack search.</li>
+  </ol>
+
+  <div class="page-footer"><span class="brand">Veritype · 0.1.0</span><span>05 · In-channel UX</span></div>
+</section>
+
+<!-- ──────────────── 06 THE VERDICT CARD (page 8) ──────────────── -->
+<section class="page">
+  <div class="page-header"><span>06 · The verdict card</span><span>08</span></div>
+  <span class="chapter-eyebrow">06 THE VERDICT CARD</span>
+  <h1 class="chapter-title">Anatomy of a Datatype card.</h1>
+  <p>Every verdict card is the same template, rendered with the verdict-specific accent color. The three Datatype expressions across the metrics row tell you the whole story without reading a single sentence.</p>
+
+  <img class="screenshot half" src="../screenshots/sample-mostly_true.png" alt="Mostly-true verdict card" />
+
+  <h2 class="section-title">Reading the card</h2>
+  <table>
+    <tr><th style="width:50mm">Element</th><th>Tells you</th></tr>
+    <tr><td><strong>Verdict pill</strong></td><td>TRUE / MOSTLY TRUE / MIXED / MISLEADING / FALSE / UNVERIFIED with a confidence pie and percentage.</td></tr>
+    <tr><td><strong>Claim line</strong></td><td>The standardised one-sentence rephrasing the agent verified, not the raw message.</td></tr>
+    <tr><td><strong>One-liner</strong></td><td>The bottom line in 140 characters, no hedging.</td></tr>
+    <tr><td><strong>Sources weighted</strong></td><td>Bar chart of every source's quality score. Tall bars are primary documents, short bars are blog re-treads.</td></tr>
+    <tr><td><strong>Evidence balance</strong></td><td>Three pie charts for supports / refutes / context. Tells you whether the agent saw mostly corroboration or a real fight.</td></tr>
+    <tr><td><strong>Salience over time</strong></td><td>Sparkline showing how often the claim has been appearing across the public record recently. Spikes flag emerging narratives.</td></tr>
+    <tr><td><strong>Context block</strong></td><td>Two to four sentences with the key facts, caveats, and dates.</td></tr>
+    <tr><td><strong>Sources list</strong></td><td>Up to five sources, each with stance pill, publisher, weight bar, and an excerpt.</td></tr>
+  </table>
+
+  <div class="page-footer"><span class="brand">Veritype · 0.1.0</span><span>06 · The verdict card</span></div>
+</section>
+
+<!-- ──────────────── 07 WORKSPACE HOME (page 9) ──────────────── -->
+<section class="page">
+  <div class="page-header"><span>07 · Workspace home</span><span>09</span></div>
+  <span class="chapter-eyebrow">07 WORKSPACE HOME</span>
+  <h1 class="chapter-title">Admins get a Slack-style dashboard.</h1>
+  <p>Open the Veritype app in Slack and you land on its Home tab. KPIs render through Datatype, verdict mix, latency, and channel coverage charts are all live. Recent verifications are one click away.</p>
+
+  <img class="screenshot" src="../screenshots/0dashboard.png" alt="Veritype workspace home dashboard" />
+
+  <h2 class="section-title">What admins look at first</h2>
+  <ul>
+    <li><strong>Claim volume</strong>: tells you whether the bot is being used at all, and whether usage is growing.</li>
+    <li><strong>True / False split</strong>: an early signal of culture. A workspace where most claims land false is making different bets than one where most land true.</li>
+    <li><strong>Latency</strong>: P50 should sit under 7 seconds. If it creeps up, the web_search budget is probably too high.</li>
+    <li><strong>Channel coverage</strong>: which channels are over-listened (consider scoping the regex) and which are silent (consider inviting the bot).</li>
+  </ul>
+
+  <div class="page-footer"><span class="brand">Veritype · 0.1.0</span><span>07 · Workspace home</span></div>
+</section>
+
+<!-- ──────────────── 08 LIBRARY (page 10) ──────────────── -->
+<section class="page">
+  <div class="page-header"><span>08 · Verification library</span><span>10</span></div>
+  <span class="chapter-eyebrow">08 VERIFICATION LIBRARY</span>
+  <h1 class="chapter-title">Every claim, every citation, searchable.</h1>
+  <p>The Library tab is the long-tail memory of the bot. Every verification, across every channel, with the full source list intact.</p>
+
+  <img class="screenshot" src="../screenshots/0library.png" alt="Verification library" />
+
+  <h2 class="section-title">Use it for</h2>
+  <ul>
+    <li><strong>Recurring debates.</strong> "We already verified this in March. Here's the card."</li>
+    <li><strong>Onboarding.</strong> New hires can browse the team's litigated facts to learn the house view.</li>
+    <li><strong>Audit.</strong> If a claim's status changes (a study is retracted, a number is revised), re-verify and the library tracks the delta.</li>
+  </ul>
+
+  <div class="page-footer"><span class="brand">Veritype · 0.1.0</span><span>08 · Verification library</span></div>
+</section>
+
+<!-- ──────────────── 09 PLAYGROUND + MCP (page 11) ──────────────── -->
+<section class="page">
+  <div class="page-header"><span>09 · Playground &amp; MCP</span><span>11</span></div>
+  <span class="chapter-eyebrow">09 PLAYGROUND &amp; MCP</span>
+  <h1 class="chapter-title">Edit live. Plug in anywhere.</h1>
+
+  <h2 class="section-title">Card playground</h2>
+  <p>Tweak any field of a sample report and watch the Datatype card re-render. Great for visually testing new verdict types or alternate copy before shipping.</p>
+  <img class="screenshot" src="../screenshots/0playground.png" alt="Card playground" />
+
+  <h2 class="section-title">MCP server</h2>
+  <p>Drop this into your Claude Desktop config and the three Veritype tools become callable from any MCP-aware client:</p>
+  <pre><span class="c">// ~/.claude/claude_desktop_config.json</span>
+{
+  <span class="k">"mcpServers"</span>: {
+    <span class="k">"veritype"</span>: {
+      <span class="k">"command"</span>: <span class="s">"node"</span>,
+      <span class="k">"args"</span>: [<span class="s">"/path/to/veritype/dist/mcp/server.js"</span>],
+      <span class="k">"env"</span>: { <span class="k">"ANTHROPIC_API_KEY"</span>: <span class="s">"sk-ant-..."</span> }
+    }
+  }
+}</pre>
+
+  <div class="page-footer"><span class="brand">Veritype · 0.1.0</span><span>09 · Playground &amp; MCP</span></div>
+</section>
+
+<!-- ──────────────── 10 SETTINGS (page 12) ──────────────── -->
+<section class="page">
+  <div class="page-header"><span>10 · Settings &amp; tuning</span><span>12</span></div>
+  <span class="chapter-eyebrow">10 SETTINGS</span>
+  <h1 class="chapter-title">Tune the listener. Trust the verdict.</h1>
+  <p>Veritype is meant to be quiet by default. The Settings tab is where you make it quieter, louder, or more discerning.</p>
+
+  <img class="screenshot" src="../screenshots/0settings.png" alt="Settings page" />
+
+  <h2 class="section-title">Knobs that matter</h2>
+  <table>
+    <tr><th style="width:55mm">Setting</th><th>When to adjust</th></tr>
+    <tr><td><strong>Auto-listen</strong></td><td>Turn off if the team prefers explicit <code>/verify</code> only. On is the default.</td></tr>
+    <tr><td><strong>Watch channels regex</strong></td><td>Use to whitelist channels. Common pattern: <code>general|product|markets</code>.</td></tr>
+    <tr><td><strong>Confidence threshold</strong></td><td>Default 0.62. Raise to 0.75+ for very quiet channels; lower to 0.45 for high-signal places like <code>#science-club</code>.</td></tr>
+    <tr><td><strong>Post in thread</strong></td><td>Default on. Off is for channels where the team wants verdicts in-line.</td></tr>
+    <tr><td><strong>Attach PNG card</strong></td><td>Default on. Off only if you have a workspace-wide rule against image attachments.</td></tr>
+    <tr><td><strong>Researcher model</strong></td><td>Opus 4.7 is the default. Sonnet 4.6 is the fallback and is ~30% cheaper.</td></tr>
+    <tr><td><strong>Web-search budget</strong></td><td>5 is a good ceiling. 3 for cost-sensitive workspaces, 8+ for very contested claims.</td></tr>
+  </table>
+
+  <div class="page-footer"><span class="brand">Veritype · 0.1.0</span><span>10 · Settings &amp; tuning</span></div>
+</section>
+
+<!-- ──────────────── 11 SETUP (page 13) ──────────────── -->
+<section class="page">
+  <div class="page-header"><span>11 · Setup &amp; deploy</span><span>13</span></div>
+  <span class="chapter-eyebrow">11 SETUP</span>
+  <h1 class="chapter-title">From cold clone to live workspace.</h1>
+
+  <h2 class="section-title">Prerequisites</h2>
+  <ul>
+    <li>Node.js 20+</li>
+    <li>An Anthropic API key with access to Opus 4.7 and the <code>web_search_20250305</code> tool.</li>
+    <li>A Slack workspace where you can install custom apps.</li>
+  </ul>
+
+  <h2 class="section-title">Install and configure</h2>
+  <pre><span class="c"># 1. clone and install</span>
+git clone https://github.com/timdries/veritype.git
+cd veritype
+npm install
+
+<span class="c"># 2. configure env</span>
+cp .env.example .env
+<span class="c"># fill in ANTHROPIC_API_KEY, SLACK_BOT_TOKEN, SLACK_APP_TOKEN, SLACK_SIGNING_SECRET</span></pre>
+
+  <h2 class="section-title">Create the Slack app</h2>
+  <ol>
+    <li>Go to api.slack.com/apps and click <strong>Create New App</strong> &rarr; <strong>From a manifest</strong>.</li>
+    <li>Paste <code>docs/slack-app-manifest.yaml</code>.</li>
+    <li>Enable Socket Mode and generate an app-level token with <code>connections:write</code>.</li>
+    <li>Install to your workspace.</li>
+  </ol>
+
+  <h2 class="section-title">Run</h2>
+  <pre><span class="c"># start the Slack agent (Socket Mode)</span>
+npm run dev:slack
+
+<span class="c"># start the demo dashboard (optional)</span>
+npm run dev:web</pre>
+
+  <p>Type <code>/verify Iceland runs on 100% renewable electricity</code> in any channel the bot is a member of. The verdict card lands in thread within ~6 seconds.</p>
+
+  <div class="callout warn">
+    <strong>Common gotchas.</strong> Puppeteer downloads Chromium on first <code>npm install</code>; if behind a corporate proxy set <code>PUPPETEER_DOWNLOAD_BASE_URL</code>. If the bot is silent, double-check the bot is invited to the channel <em>and</em> that the channel name matches the <code>VERITYPE_WATCH_CHANNELS</code> regex.
+  </div>
+
+  <div class="page-footer"><span class="brand">Veritype · 0.1.0</span><span>11 · Setup</span></div>
+</section>
+
+<!-- ──────────────── 12 RESOURCES (page 14) ──────────────── -->
+<section class="page">
+  <div class="page-header"><span>12 · Resources</span><span>14</span></div>
+  <span class="chapter-eyebrow">12 RESOURCES</span>
+  <h1 class="chapter-title">Where to look next.</h1>
+
+  <h2 class="section-title">Links</h2>
+  <div class="kv">
+    <div class="k">Repo</div><div>github.com/timdries/veritype</div>
+    <div class="k">Devpost</div><div>slackhack.devpost.com</div>
+    <div class="k">Demo video</div><div>youtu.be/REPLACE_WITH_DEMO_ID</div>
+    <div class="k">Datatype font</div><div>franktisellano.github.io/datatype</div>
+    <div class="k">Slack Bolt</div><div>slack.dev/bolt-js</div>
+    <div class="k">Anthropic web_search</div><div>docs.anthropic.com/en/docs/build-with-claude/tool-use/web-search-tool</div>
+    <div class="k">Model Context Protocol</div><div>modelcontextprotocol.io</div>
+  </div>
+
+  <h2 class="section-title">Repo layout</h2>
+  <pre><span class="c">src/
+  core/           shared brain (screener, researcher, renderer, types, samples)
+  slack/          Bolt app + Block Kit blocks
+  mcp/            stdio MCP server wrapping the same core
+  web/            Vite + React dashboard (Slack-skinned, demo + screenshots)
+assets/
+  fonts/          Datatype woff2 (Regular / Medium / SemiBold / Bold)
+docs/
+  screenshots/    in-app screenshots, sample verdict cards
+  manual/         operator manual sources + rendered PDF
+deck/             pitch deck (.pptx + .pdf)</span></pre>
+
+  <h2 class="section-title">License</h2>
+  <p>The Veritype code is MIT. The Datatype font is Apache 2.0; see <code>franktisellano/datatype</code> for the source and full license text.</p>
+
+  <div class="page-footer"><span class="brand">Veritype · 0.1.0</span><span>12 · Resources</span></div>
+</section>
+
+<!-- ──────────────── CLOSING (page 15) ──────────────── -->
+<section class="closing last">
+  <div class="colors">
+    <span style="background:#36C5F0"></span>
+    <span style="background:#2EB67D"></span>
+    <span style="background:#ECB22E"></span>
+    <span style="background:#E01E5A"></span>
+  </div>
+  <div class="closing-inner">
+    <div class="cover-eyebrow">END · OPERATOR MANUAL</div>
+    <h1>Verify in channel.<br/>Trust on sight.</h1>
+    <p>Veritype is the Slack-native fact-checker for teams that move fast on shared information. Coded agent, MCP-ready, chart-rich, ephemeral when it should be, in-thread when it counts.</p>
+    <p>The repo, the demo, the deck, and this manual are all linked from the README. If anything is unclear, open an issue or DM Tim.</p>
+    <div class="tagline">Slack-native fact-checking, with charts that ride inside type.</div>
+  </div>
+</section>
+
+</body>
+</html>

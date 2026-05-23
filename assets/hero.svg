@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" width="1200" height="360">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3F0E40"/>
+      <stop offset="100%" stop-color="#19171D"/>
+    </linearGradient>
+    <linearGradient id="acc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#36C5F0"/>
+      <stop offset="33%" stop-color="#2EB67D"/>
+      <stop offset="66%" stop-color="#ECB22E"/>
+      <stop offset="100%" stop-color="#E01E5A"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="360" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#acc)"/>
+
+  <!-- Slack squiggle mark -->
+  <g transform="translate(70 110) scale(1.2)">
+    <path d="M26 78a11 11 0 1 1 0-22h11v11a11 11 0 0 1-11 11z" fill="#E01E5A"/>
+    <path d="M31 78a11 11 0 0 1 22 0v27a11 11 0 1 1-22 0z" fill="#E01E5A"/>
+    <path d="M42 26a11 11 0 1 1 22 0v11H53a11 11 0 0 1-11-11z" fill="#36C5F0"/>
+    <path d="M42 31a11 11 0 0 1 0 22H15a11 11 0 1 1 0-22z" fill="#36C5F0"/>
+    <path d="M94 42a11 11 0 1 1 0 22H83V53a11 11 0 0 1 11-11z" fill="#2EB67D"/>
+    <path d="M89 42a11 11 0 0 1-22 0V15a11 11 0 1 1 22 0z" fill="#2EB67D"/>
+    <path d="M78 94a11 11 0 1 1-22 0V83h11a11 11 0 0 1 11 11z" fill="#ECB22E"/>
+    <path d="M78 89a11 11 0 0 1 0-22h27a11 11 0 1 1 0 22z" fill="#ECB22E"/>
+  </g>
+
+  <!-- ÷ glyph separator -->
+  <text x="240" y="200" fill="#fff" font-family="Lato, sans-serif" font-weight="200" font-size="80" opacity="0.4">×</text>
+
+  <!-- Title -->
+  <text x="305" y="170" fill="#fff" font-family="Lato, sans-serif" font-weight="900" font-size="78" letter-spacing="-2">Veritype</text>
+  <text x="307" y="220" fill="#BBBABC" font-family="Lato, sans-serif" font-weight="400" font-size="22" letter-spacing="0.5">A Slack-native fact-checker</text>
+  <text x="307" y="250" fill="#BBBABC" font-family="Lato, sans-serif" font-weight="400" font-size="22" letter-spacing="0.5">with chart-rich, Datatype-rendered verdict cards.</text>
+
+  <!-- Datatype-style chart hints (rendered as real text the font would turn into charts) -->
+  <text x="307" y="312" fill="#36C5F0" font-family="Datatype, monospace" font-weight="400" font-size="22" opacity="0.8">{b:20,45,70,82,90,95}  ·  {l:30,42,60,72,85,90,88}  ·  {p:84}</text>
+</svg>

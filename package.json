@@ -1,0 +1,39 @@
+{
+  "name": "veritype",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Veritype — a Slack-native fact-checking agent that renders crisp, chart-rich verdict cards using the Datatype variable font",
+  "type": "module",
+  "scripts": {
+    "dev:slack": "tsx watch src/slack/app.ts",
+    "dev:mcp": "tsx src/mcp/server.ts",
+    "dev:web": "vite",
+    "dev": "concurrently -n slack,web -c blue,magenta \"npm:dev:slack\" \"npm:dev:web\"",
+    "build:slack": "tsc -p tsconfig.json",
+    "build:web": "vite build",
+    "preview:web": "vite preview --port 5173",
+    "render:card": "tsx src/core/renderCli.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "echo \"no linter configured\""
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.40.0",
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "@slack/bolt": "^4.1.1",
+    "dotenv": "^16.4.7",
+    "puppeteer": "^23.10.4",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
+  }
+}
