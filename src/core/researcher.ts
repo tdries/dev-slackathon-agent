@@ -172,11 +172,11 @@ function normalizeReport(originalClaim: string, raw: Record<string, unknown>) {
   }
 
   return {
-    claim: String(raw.claim ?? originalClaim),
+    claim: stripCiteTags(String(raw.claim ?? originalClaim)),
     verdict,
     confidence: clamp01(Number(raw.confidence ?? 0.5)),
-    oneLiner: trimTo(String(raw.oneLiner ?? ''), 200),
-    context: String(raw.context ?? ''),
+    oneLiner: stripCiteTags(trimTo(String(raw.oneLiner ?? ''), 200)),
+    context: stripCiteTags(String(raw.context ?? '')),
     sources,
     supportPct,
     refutePct,
@@ -186,15 +186,29 @@ function normalizeReport(originalClaim: string, raw: Record<string, unknown>) {
   };
 }
 
+// Anthropic web_search returns text peppered with <cite index="...">...</cite>
+// markers. They are useful as machine-readable citation anchors but bleed
+// through when we render the card visually. Strip the wrapper, keep the
+// inner text.
+function stripCiteTags(s: string): string {
+  return s
+    .replace(/<cite\s+[^>]*>([\s\S]*?)<\/cite>/gi, '$1')
+    .replace(/<\/?cite[^>]*>/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
 function normalizeSources(raw: unknown): Source[] {
   if (!Array.isArray(raw)) return [];
   return raw.slice(0, 8).map((s: Record<string, unknown>) => ({
-    title: String(s.title ?? ''),
+    title: stripCiteTags(String(s.title ?? '')),
     url: String(s.url ?? ''),
-    publisher: String(s.publisher ?? new URL(String(s.url ?? 'https://example.com')).hostname),
+    publisher: stripCiteTags(
+      String(s.publisher ?? new URL(String(s.url ?? 'https://example.com')).hostname),
+    ),
     stance: normalizeStance(s.stance),
     weight: clampPct(Number(s.weight ?? 50)),
-    excerpt: trimTo(String(s.excerpt ?? ''), 260),
+    excerpt: stripCiteTags(trimTo(String(s.excerpt ?? ''), 260)),
   }));
 }
 

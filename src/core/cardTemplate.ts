@@ -62,6 +62,9 @@ export function buildCardHtml(report: VerificationReport): string {
 <head>
 <meta charset="utf-8" />
 <title>Veritype verdict</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   @font-face {
     font-family: 'Datatype';
@@ -90,11 +93,20 @@ export function buildCardHtml(report: VerificationReport): string {
 
   :root {
     --bg: #ffffff;
-    --ink: #0f1419;
-    --ink-2: #4a5560;
-    --ink-3: #8794a1;
-    --hairline: #e3e8ec;
-    --panel: #f7fafc;
+    --ink: #1D1C1D;            /* Slack ink */
+    --ink-2: #454245;
+    --ink-3: #616061;
+    --ink-4: #868686;
+    --hairline: #DDDDDD;        /* Slack hairline */
+    --hairline-soft: #E8E8E8;
+    --panel: #F8F8F8;
+    --aubergine: #3F0E40;       /* Slack sidebar */
+    --aubergine-deep: #19171D;
+    --slack-blue: #1264A3;
+    --slack-pink: #E01E5A;
+    --slack-yellow: #ECB22E;
+    --slack-green: #2EB67D;
+    --slack-cyan: #36C5F0;
     --accent: ${verdictColor};
   }
 
@@ -105,15 +117,13 @@ export function buildCardHtml(report: VerificationReport): string {
     padding: 0;
     background: var(--bg);
     color: var(--ink);
-    font-family: 'Datatype', -apple-system, 'Helvetica Neue', Arial, sans-serif;
-    font-feature-settings: 'calt' 1, 'liga' 1, 'dlig' 1;
-    font-variant-ligatures: discretionary-ligatures contextual;
+    font-family: 'Lato', 'Slack-Lato', -apple-system, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
   .card {
     width: 880px;
-    padding: 36px 40px 36px 40px;
+    padding: 36px 40px 32px 40px;
     background: var(--bg);
     border: 1px solid var(--hairline);
     border-radius: 14px;
@@ -121,12 +131,19 @@ export function buildCardHtml(report: VerificationReport): string {
     overflow: hidden;
   }
 
+  /* Slack pinwheel-colored top accent: cyan, green, yellow, pink */
   .card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 6px;
-    background: var(--accent);
+    background: linear-gradient(
+      90deg,
+      #36C5F0 0%, #36C5F0 25%,
+      #2EB67D 25%, #2EB67D 50%,
+      #ECB22E 50%, #ECB22E 75%,
+      #E01E5A 75%, #E01E5A 100%
+    );
   }
 
   .header {
@@ -134,32 +151,40 @@ export function buildCardHtml(report: VerificationReport): string {
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    margin-bottom: 18px;
+    margin-bottom: 22px;
   }
 
   .brand {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--ink-2);
-    letter-spacing: 0.04em;
+    font-weight: 900;
+    font-size: 13px;
+    color: var(--ink);
+    letter-spacing: 0.08em;
     text-transform: uppercase;
+    font-family: 'Lato', sans-serif;
   }
 
   .brand-mark {
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
-    background: linear-gradient(135deg, #1264A3, #2EB67D);
+    width: 28px;
+    height: 28px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .brand-mark svg { display: block; }
+
+  .brand-for-slack {
+    margin-left: 6px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--aubergine);
     color: #fff;
+    font-size: 10px;
     font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0;
+    letter-spacing: 0.08em;
   }
 
   .verdict-pill {
@@ -179,9 +204,11 @@ export function buildCardHtml(report: VerificationReport): string {
   .claim {
     font-size: 26px;
     line-height: 1.25;
-    font-weight: 600;
+    font-weight: 900;
     margin: 6px 0 14px 0;
     color: var(--ink);
+    letter-spacing: -0.01em;
+    font-family: 'Lato', sans-serif;
   }
 
   .oneliner {
@@ -189,6 +216,7 @@ export function buildCardHtml(report: VerificationReport): string {
     line-height: 1.45;
     color: var(--ink-2);
     margin-bottom: 24px;
+    font-family: 'Lato', sans-serif;
   }
 
   .grid {
@@ -221,9 +249,11 @@ export function buildCardHtml(report: VerificationReport): string {
 
   .metric-num {
     font-size: 28px;
-    font-weight: 700;
+    font-weight: 900;
     color: var(--ink);
     line-height: 1;
+    font-family: 'Lato', sans-serif;
+    letter-spacing: -0.01em;
   }
 
   .metric-unit {
@@ -265,14 +295,15 @@ export function buildCardHtml(report: VerificationReport): string {
 
   .context-block {
     background: var(--panel);
-    border: 1px solid var(--hairline);
-    border-left: 3px solid var(--accent);
+    border: 1px solid var(--hairline-soft);
+    border-left: 4px solid var(--accent);
     padding: 14px 16px;
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: 14px;
     line-height: 1.55;
     color: var(--ink);
     margin-bottom: 22px;
+    font-family: 'Lato', sans-serif;
   }
 
   .sources {
@@ -350,14 +381,21 @@ export function buildCardHtml(report: VerificationReport): string {
   .footer {
     margin-top: 22px;
     padding-top: 14px;
-    border-top: 1px solid var(--hairline);
+    border-top: 1px solid var(--hairline-soft);
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 11px;
     color: var(--ink-3);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
+    font-family: 'Lato', sans-serif;
+  }
+
+  .footer .left { font-weight: 700; color: var(--ink-2); }
+  .footer .left .for-slack {
+    color: var(--aubergine);
+    font-weight: 900;
+    margin-left: 4px;
   }
 
   .trend-line {
@@ -370,7 +408,22 @@ export function buildCardHtml(report: VerificationReport): string {
 <body>
 <div class="card">
   <div class="header">
-    <div class="brand"><span class="brand-mark">V</span> Veritype verdict</div>
+    <div class="brand">
+      <span class="brand-mark">
+        <svg width="28" height="28" viewBox="0 0 124 124" xmlns="http://www.w3.org/2000/svg" aria-label="Veritype for Slack">
+          <path d="M26 78a11 11 0 1 1 0-22h11v11a11 11 0 0 1-11 11z" fill="#E01E5A"/>
+          <path d="M31 78a11 11 0 0 1 22 0v27a11 11 0 1 1-22 0z" fill="#E01E5A"/>
+          <path d="M42 26a11 11 0 1 1 22 0v11H53a11 11 0 0 1-11-11z" fill="#36C5F0"/>
+          <path d="M42 31a11 11 0 0 1 0 22H15a11 11 0 1 1 0-22z" fill="#36C5F0"/>
+          <path d="M94 42a11 11 0 1 1 0 22H83V53a11 11 0 0 1 11-11z" fill="#2EB67D"/>
+          <path d="M89 42a11 11 0 0 1-22 0V15a11 11 0 1 1 22 0z" fill="#2EB67D"/>
+          <path d="M78 94a11 11 0 1 1-22 0V83h11a11 11 0 0 1 11 11z" fill="#ECB22E"/>
+          <path d="M78 89a11 11 0 0 1 0-22h27a11 11 0 1 1 0 22z" fill="#ECB22E"/>
+        </svg>
+      </span>
+      Veritype verdict
+      <span class="brand-for-slack">FOR SLACK</span>
+    </div>
     <div class="verdict-pill">${verdictLabel} <span class="chart" style="font-size:14px">${confidencePie}</span> ${confidencePct}%</div>
   </div>
 
@@ -423,7 +476,7 @@ export function buildCardHtml(report: VerificationReport): string {
   </ul>
 
   <div class="footer">
-    <span>Generated by Veritype on ${new Date(report.generatedAt).toUTCString()}</span>
+    <span class="left">Veritype<span class="for-slack">FOR SLACK</span> &middot; ${new Date(report.generatedAt).toUTCString()}</span>
     <span>Model: ${report.model} &middot; ${report.latencyMs}ms</span>
   </div>
 </div>

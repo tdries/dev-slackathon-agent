@@ -109,22 +109,26 @@ export function verdictBlocks(report: VerificationReport, opts: { imageUrl?: str
     ],
   });
 
+  const firstSourceUrl = report.sources[0]?.url;
+  const followupElements: Array<Record<string, unknown>> = [
+    {
+      type: 'button',
+      text: { type: 'plain_text', text: 'Disagree?' },
+      action_id: 'veritype_disagree',
+    },
+  ];
+  if (firstSourceUrl && /^https?:\/\//.test(firstSourceUrl)) {
+    followupElements.unshift({
+      type: 'button',
+      text: { type: 'plain_text', text: 'Open top source' },
+      url: firstSourceUrl,
+      action_id: 'veritype_open_source',
+    });
+  }
   blocks.push({
     type: 'actions',
     block_id: 'veritype_followup',
-    elements: [
-      {
-        type: 'button',
-        text: { type: 'plain_text', text: 'Open report' },
-        url: '#',
-        action_id: 'veritype_open_report',
-      },
-      {
-        type: 'button',
-        text: { type: 'plain_text', text: 'Disagree?' },
-        action_id: 'veritype_disagree',
-      },
-    ],
+    elements: followupElements,
   });
 
   return blocks;
